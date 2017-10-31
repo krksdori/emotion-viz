@@ -1,0 +1,189 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>emotion visualiser</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+    <div id="slidecontainer">
+        <p id="t-anger">Anger</p>
+        <input type="range" min="0" max="100" value="50" class="slider" id="angerInput">
+        <br>
+        <br>
+        <p id="t-happiness">Happiness</p>
+        <input type="range" min="0" max="100" value="50" class="slider" id="happinessInput">
+        <br>
+        <br>
+        <p id="t-sadness">Sadness</p>
+        <input type="range" min="0" max="100" value="50" class="slider" id="sadnessInput">
+        <br>
+        <br>
+        <p id="t-fear">Fear</p>
+        <input type="range" min="0" max="100" value="50" class="slider" id="fearInput">
+        <br>
+        <br>
+        <p id="t-surprise">Surprise</p>
+        <input type="range" min="0" max="100" value="50" class="slider" id="surpriseInput">
+        <br>
+        <br>
+        <p id="t-disgust">Disgust</p>
+        <input type="range" min="0" max="100" value="50" class="slider" id="disgustInput">
+        <br>
+        <br>
+    </div>
+    <div id="canvas-holder">
+        <canvas id="chart-area"></canvas>
+    </div>
+    <script>
+    var chartArea = document.getElementById("chart-area");
+
+    var angerSlider = document.getElementById("angerInput");
+    var happinessSlider = document.getElementById("happinessInput");
+    var sadnessSlider = document.getElementById("sadnessInput");
+    var fearSlider = document.getElementById("fearInput");
+    var surpriseSlider = document.getElementById("surpriseInput");
+    var disgustSlider = document.getElementById("disgustInput");
+
+    angerInput.oninput = function() { updateGraph(0, this.value) };
+    happinessInput.oninput = function() { updateGraph(1, this.value) };
+    sadnessInput.oninput = function() { updateGraph(2, this.value) };
+    fearInput.oninput = function() { updateGraph(3, this.value) };
+    surpriseInput.oninput = function() { updateGraph(4, this.value) };
+    disgustInput.oninput = function() { updateGraph(5, this.value) };
+
+
+    var tempData = [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+    ];
+
+    var inputData = {
+        labels: [
+            "Anger",
+            "Happiness",
+            "Sadness",
+            "Fear",
+            "Surprise",
+            "Disgust"
+        ],
+        datasets: [{
+            data: [
+                50,
+                50,
+                50,
+                50,
+                50,
+                50
+            ],
+            backgroundColor: [
+                "rgba(221, 4, 10, 1)", //anger
+                "rgba(243, 200, 18, 1)", //happiness
+                "rgba(19, 39, 220, 1)", //sadness
+                "rgba(164, 14, 242, 1)", //fear
+                "rgba(210, 3, 195, 1)", //surprise
+                "rgba(3, 71, 50, 1)" //disgust
+            ],
+            borderColor: "rgba(0, 0, 0, 1)",
+            // hoverBackgroundColor: [
+            // "rgba(255,0,0,1)"
+            // ],
+            borderWidth: 0
+        }]
+    };
+
+
+
+    function updateGraph(index, value) {
+        tempData[index] = value;
+
+        var finalData = [];
+        for (var i in tempData) {
+            if (tempData[i] > 0) {
+                finalData[i] = tempData[i]
+            }
+        }
+
+        polarAreaChart.data = {
+            labels: [
+                "Anger",
+                "Happiness",
+                "Sadness",
+                "Fear",
+                "Surprise",
+                "Disgust"
+            ],
+            datasets: [{
+                data: finalData,
+                backgroundColor: [
+                    "rgba(221, 4, 10, 1)",     //anger
+                    "rgba(243, 200, 18, 1)",  //happiness
+                    "rgba(19, 39, 220, 1)",   //sadness
+                    "rgba(164, 14, 242, 1)",  //fear
+                    "rgba(210, 3, 195, 1)",  //surprise
+                    "rgba(3, 71, 50, 1)"     //disgust
+                ],
+                borderColor: "rgba(0, 0, 0, 1)",
+                // hoverBackgroundColor: [
+                // "rgba(255,0,0,1)"
+                // ],
+                borderWidth: 0
+            }]
+        };
+
+        polarAreaChart.update(0);
+    }
+
+
+    var chartOptions = {
+        // startAngle: -Math.PI / 4,
+        legend: {
+            display: false
+        },
+        animation: {
+            animateRotate: true
+        },
+        scale: {
+            display: false
+        },
+        tooltips: {
+            position: 'nearest',
+            mode: 'nearest',
+            intersect: true,
+            yPadding: 10,
+            xPadding: 10,
+            caretSize: 8,
+            backgroundColor: 'rgba(255,255,255, 1)',
+            titleFontColor: "black",
+            bodyFontColor: "black",
+            borderColor: 'rgba(0,0,0,1)',
+            borderWidth: 1
+        }
+    };
+
+    var polarAreaChart = new Chart(chartArea, {
+        type: 'polarArea',
+        data: inputData,
+        options: chartOptions
+    });
+
+    var link = document.createElement('a');
+    link.innerHTML = 'download as image';
+    link.addEventListener('click', function(ev) {
+        link.href = chartArea.toDataURL();
+        link.download = "emotion-visualisation.png";
+    }, false);
+    document.body.appendChild(link);
+    </script>
+</body>
+
+</html>
